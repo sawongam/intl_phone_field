@@ -284,7 +284,7 @@ class IntlPhoneField extends StatefulWidget {
     this.enabled = true,
     this.keyboardAppearance,
     @Deprecated('Use searchFieldInputDecoration of PickerDialogStyle instead')
-    this.searchText = 'Search country',
+    this.searchText = 'Search here',
     this.dropdownIconPosition = IconPosition.leading,
     this.dropdownIcon = const Icon(Icons.arrow_drop_down),
     this.autofocus = false,
@@ -378,9 +378,11 @@ class _IntlPhoneFieldState extends State<IntlPhoneField> {
 
   Future<void> _changeCountry() async {
     filteredCountries = _countryList;
-    await showDialog(
+    await showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
       useRootNavigator: false,
+      useSafeArea: true,
       builder: (context) => StatefulBuilder(
         builder: (ctx, setState) => CountryPickerDialog(
           languageCode: widget.languageCode.toLowerCase(),

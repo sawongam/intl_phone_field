@@ -84,19 +84,30 @@ class _CountryPickerDialogState extends State<CountryPickerDialog> {
   Widget build(BuildContext context) {
     final mediaWidth = MediaQuery.of(context).size.width;
     final width = widget.style?.width ?? mediaWidth;
-    const defaultHorizontalPadding = 40.0;
-    const defaultVerticalPadding = 24.0;
+    const defaultHorizontalPadding = 0.0;
+    const defaultVerticalPadding = 0.0;
     return Dialog(
       insetPadding: EdgeInsets.symmetric(
           vertical: defaultVerticalPadding,
           horizontal: mediaWidth > (width + defaultHorizontalPadding * 2)
               ? (mediaWidth - width) / 2
               : defaultHorizontalPadding),
-      backgroundColor: widget.style?.backgroundColor,
+      backgroundColor: widget.style?.backgroundColor ?? Colors.white,
+      surfaceTintColor: Colors.transparent,
       child: Container(
         padding: widget.style?.padding ?? const EdgeInsets.all(10),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
+            const SizedBox(height: 10),
+            Text(
+              'Select Country',
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 18,
+                  ),
+            ),
+            const SizedBox(height: 15),
             Padding(
               padding:
                   widget.style?.searchFieldPadding ?? const EdgeInsets.all(0),
@@ -104,8 +115,20 @@ class _CountryPickerDialogState extends State<CountryPickerDialog> {
                 cursorColor: widget.style?.searchFieldCursorColor,
                 decoration: widget.style?.searchFieldInputDecoration ??
                     InputDecoration(
-                      suffixIcon: const Icon(Icons.search),
+                      prefixIcon: const Icon(Icons.search),
                       labelText: widget.searchText,
+                      filled: true,
+                      fillColor: Colors.white,
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: Colors.grey.shade300),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: const BorderSide(color: Colors.blue),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 0),
                     ),
                 onChanged: (value) {
                   _filteredCountries = widget.countryList.stringSearch(value)
@@ -118,7 +141,7 @@ class _CountryPickerDialogState extends State<CountryPickerDialog> {
                 },
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
             Expanded(
               child: ListView.builder(
                 shrinkWrap: true,
@@ -141,7 +164,7 @@ class _CountryPickerDialogState extends State<CountryPickerDialog> {
                         _filteredCountries[index]
                             .localizedName(widget.languageCode),
                         style: widget.style?.countryNameStyle ??
-                            const TextStyle(fontWeight: FontWeight.w700),
+                            const TextStyle(fontWeight: FontWeight.w400),
                       ),
                       trailing: Text(
                         '+${_filteredCountries[index].dialCode}',
@@ -154,8 +177,8 @@ class _CountryPickerDialogState extends State<CountryPickerDialog> {
                         Navigator.of(context).pop();
                       },
                     ),
-                    widget.style?.listTileDivider ??
-                        const Divider(thickness: 1),
+                    // widget.style?.listTileDivider ??
+                    //     const Divider(thickness: 1),
                   ],
                 ),
               ),

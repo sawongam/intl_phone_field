@@ -317,6 +317,16 @@ class _IntlPhoneFieldState extends State<IntlPhoneField> {
   String? validatorMessage;
 
   @override
+  void didUpdateWidget(covariant IntlPhoneField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.initialCountryCode != widget.initialCountryCode) {
+      _selectedCountry = _countryList.firstWhere(
+          (item) => item.code == (widget.initialCountryCode ?? 'US'),
+          orElse: () => _countryList.first);
+    }
+  }
+
+  @override
   void initState() {
     super.initState();
     _countryList = widget.countries ?? countries;

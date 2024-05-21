@@ -12,9 +12,6 @@ import 'country_picker_dialog.dart';
 import 'helpers.dart';
 
 class IntlPhoneField extends StatefulWidget {
-  /// Form key to validate the form
-  final GlobalKey<FormState>? formKey;
-
   /// Whether the input field is mandatory (For validating using formKey)
   final bool isMandatory;
 
@@ -255,7 +252,6 @@ class IntlPhoneField extends StatefulWidget {
 
   const IntlPhoneField({
     Key? key,
-    this.formKey,
     this.isMandatory = false,
     this.initialCountryCode,
     this.languageCode = 'en',
@@ -404,80 +400,76 @@ class _IntlPhoneFieldState extends State<IntlPhoneField> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: widget.formKey ?? GlobalKey<FormState>(),
-      child: TextFormField(
-        initialValue: (widget.controller == null) ? number : null,
-        autofillHints: widget.disableAutoFillHints
-            ? null
-            : [AutofillHints.telephoneNumberNational],
-        readOnly: widget.readOnly,
-        obscureText: widget.obscureText,
-        textAlign: widget.textAlign,
-        textAlignVertical: widget.textAlignVertical,
-        cursorColor: widget.cursorColor,
-        onTap: widget.onTap,
-        controller: widget.controller,
-        focusNode: widget.focusNode,
-        cursorHeight: widget.cursorHeight,
-        cursorRadius: widget.cursorRadius,
-        cursorWidth: widget.cursorWidth,
-        showCursor: widget.showCursor,
-        onFieldSubmitted: widget.onSubmitted,
-        magnifierConfiguration: widget.magnifierConfiguration,
-        decoration: widget.decoration.copyWith(
-          prefixIcon: _buildFlagsButton(),
-          counterText: !widget.enabled ? '' : null,
-        ),
-        style: widget.style,
-        onSaved: (value) {
-          widget.onSaved?.call(
-            PhoneNumber(
-              countryISOCode: _selectedCountry.code,
-              countryCode:
-                  '+${_selectedCountry.dialCode}${_selectedCountry.regionCode}',
-              number: value!,
-            ),
-          );
-        },
-        onChanged: (value) async {
-          final phoneNumber = PhoneNumber(
-            countryISOCode: _selectedCountry.code,
-            countryCode: '+${_selectedCountry.fullCountryCode}',
-            number: value,
-          );
-
-          if (widget.autovalidateMode != AutovalidateMode.disabled) {
-            validatorMessage = await widget.validator?.call(phoneNumber);
-          }
-
-          widget.onChanged?.call(phoneNumber);
-        },
-        validator: (value) {
-          //Check if the field is mandatory and empty
-          if (widget.isMandatory && value!.isEmpty) {
-            return 'Phone number cannot be empty';
-          }
-          if (value == null || !isNumeric(value)) return validatorMessage;
-          if (!widget.disableLengthCheck) {
-            return value.length >= _selectedCountry.minLength &&
-                    value.length <= _selectedCountry.maxLength
-                ? null
-                : widget.invalidNumberMessage;
-          }
-
-          return validatorMessage;
-        },
-        maxLength:
-            widget.disableLengthCheck ? null : _selectedCountry.maxLength,
-        keyboardType: widget.keyboardType,
-        inputFormatters: widget.inputFormatters,
-        enabled: widget.enabled,
-        keyboardAppearance: widget.keyboardAppearance,
-        autofocus: widget.autofocus,
-        textInputAction: widget.textInputAction,
-        autovalidateMode: widget.autovalidateMode,
+    return TextFormField(
+      initialValue: (widget.controller == null) ? number : null,
+      autofillHints: widget.disableAutoFillHints
+          ? null
+          : [AutofillHints.telephoneNumberNational],
+      readOnly: widget.readOnly,
+      obscureText: widget.obscureText,
+      textAlign: widget.textAlign,
+      textAlignVertical: widget.textAlignVertical,
+      cursorColor: widget.cursorColor,
+      onTap: widget.onTap,
+      controller: widget.controller,
+      focusNode: widget.focusNode,
+      cursorHeight: widget.cursorHeight,
+      cursorRadius: widget.cursorRadius,
+      cursorWidth: widget.cursorWidth,
+      showCursor: widget.showCursor,
+      onFieldSubmitted: widget.onSubmitted,
+      magnifierConfiguration: widget.magnifierConfiguration,
+      decoration: widget.decoration.copyWith(
+        prefixIcon: _buildFlagsButton(),
+        counterText: !widget.enabled ? '' : null,
       ),
+      style: widget.style,
+      onSaved: (value) {
+        widget.onSaved?.call(
+          PhoneNumber(
+            countryISOCode: _selectedCountry.code,
+            countryCode:
+                '+${_selectedCountry.dialCode}${_selectedCountry.regionCode}',
+            number: value!,
+          ),
+        );
+      },
+      onChanged: (value) async {
+        final phoneNumber = PhoneNumber(
+          countryISOCode: _selectedCountry.code,
+          countryCode: '+${_selectedCountry.fullCountryCode}',
+          number: value,
+        );
+
+        if (widget.autovalidateMode != AutovalidateMode.disabled) {
+          validatorMessage = await widget.validator?.call(phoneNumber);
+        }
+
+        widget.onChanged?.call(phoneNumber);
+      },
+      validator: (value) {
+        //Check if the field is mandatory and empty
+        if (widget.isMandatory && value!.isEmpty) {
+          return 'Phone number cannot be empty';
+        }
+        if (value == null || !isNumeric(value)) return validatorMessage;
+        if (!widget.disableLengthCheck) {
+          return value.length >= _selectedCountry.minLength &&
+                  value.length <= _selectedCountry.maxLength
+              ? null
+              : widget.invalidNumberMessage;
+        }
+
+        return validatorMessage;
+      },
+      maxLength: widget.disableLengthCheck ? null : _selectedCountry.maxLength,
+      keyboardType: widget.keyboardType,
+      inputFormatters: widget.inputFormatters,
+      enabled: widget.enabled,
+      keyboardAppearance: widget.keyboardAppearance,
+      autofocus: widget.autofocus,
+      textInputAction: widget.textInputAction,
+      autovalidateMode: widget.autovalidateMode,
     );
   }
 
